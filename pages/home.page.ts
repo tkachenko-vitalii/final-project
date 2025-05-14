@@ -1,7 +1,6 @@
 import {expect, Locator, Page } from "@playwright/test";
 import { Header } from "../pageFragments/header";
 import { ProductsFiltersFragment } from '../pageFragments/productsFilters'
-import { sortPrices, sortNames } from "../utils/sorting";
 
 export class HomePage {
     readonly page: Page;
@@ -28,14 +27,6 @@ async getProductPrices(): Promise<number[]> {
   const priceTexts = await this.page.getByTestId('product-price').allTextContents();
   return priceTexts.map(text => parseFloat(text.replace('$', '')));
 }
-  sortPrices(prices: number[], ascending: boolean): number[] {
-    return [...prices].sort((a, b) => ascending ? a - b : b - a);
-  }
-
-  sortNames(productNames: string[], ascending: boolean): string[] {
-    return [...productNames].sort((a, b) => ascending ? a.localeCompare(b) : b.localeCompare(a)
-  )
-  }
 
   async checkUrl(title:string):Promise<void> {
     await expect(this.page).toHaveURL(title)

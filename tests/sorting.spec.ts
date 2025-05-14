@@ -1,8 +1,9 @@
-import { test, expect } from '@playwright/test';
-import { HomePage } from '../pages/home.page';
-import { PowerTools } from '../tools.ts';
+import { expect } from '@playwright/test';
+import { test } from '../pages/fixtures/myFixtures';
+import { PowerTools } from '../tools';
 import { sortPrices, sortNames } from "../utils/sorting";
 import dotenv from 'dotenv';
+
 dotenv.config();
 
 
@@ -14,12 +15,8 @@ test.describe('Sorting by name', () => {
   
     for (const { label, ascending } of sortOptions) {
       
-      test(`Verify sorting by ${label}`, async ({ page }) => {
+      test(`Verify sorting by ${label}`, async ({ homePage }) => {
         
-        const homePage = new HomePage(page)
-        
-        await homePage.open();
-
         await homePage.filters.selectSortOption(label);
 
         const productNames = await homePage.getProductNames();
@@ -39,11 +36,8 @@ test.describe('Sorting by name', () => {
       ];
     
       for (const { label, ascending } of sortingOptions) {
-        test(`Sorting by ${label}`, async ({ page }) => {
-          const homePage = new HomePage(page);
-        
-          await homePage.open();
-
+        test(`Sorting by ${label}`, async ({ homePage }) => {
+          
           await homePage.filters.selectSortOption(label);
     
           const prices = await homePage.getProductPrices();
@@ -55,10 +49,8 @@ test.describe('Sorting by name', () => {
       }
     });
   
-    test('Filter products by category', async ({ page }) => {
-      const homePage = new HomePage(page);
-    
-      await homePage.open();
+    test('Filter products by category', async ({ homePage }) => {
+      
 
       await homePage.filters.filterByCategory(PowerTools.Sander);
     
