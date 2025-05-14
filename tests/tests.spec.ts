@@ -1,54 +1,46 @@
-import { expect, test} from '@playwright/test';
+import { expect} from '@playwright/test';
 import { LoginPage } from '../pages/login.page';
 import dotenv from 'dotenv';
-import { ProductPage } from '../pages/product.page';
 import { HomePage } from '../pages/home.page';
+import { test } from '../pages/fixtures/myFixtures';
+
 dotenv.config();
 
 
-test('Authorization', async ({ page }) => {
+test('Authorization', async ({ loggedInPage }) => {
 
-  const loginPage = new LoginPage(page);
-  const homePage = new HomePage(page);
-
-  await page.goto('/auth/login')
-
-await loginPage.login(process.env.USER_EMAIL!,process.env.USER_PASSWORD!)
+  const loginPage = new LoginPage(loggedInPage);
+  const homePage = new HomePage(loggedInPage);
 
 await homePage.header.checkUrl('/account')
 
 await loginPage.checkTitle('My account')
 
-await homePage.header.checkAccName(process.env.USER_NAME!)
+await homePage.header.checkAccName()
 
 });
 
 
-test('ProductInfo', async ({ page }) => {
-  const homePage = new HomePage(page) 
+test('ProductInfo', async ({ homePage, productPage }) => {
 
-  const productPage = new ProductPage(page)
-
-  await homePage.open();
-
-  await productPage.openProduct('Combination Pliers')
+  const productTitle = 'Combination Pliers';
+  const productPrice =  14.15;
+ 
+  await productPage.openProduct(productTitle);
     
-  await productPage.checkProductInfo('Combination Pliers', 14.15)
+  await productPage.checkProductInfo(productTitle, productPrice);
 })
 
 
 
-test('AddToCart', async ({ page }) => {
+test('AddToCart', async ({ homePage, productPage, checkOutPage }) => {
 
-  const homePage = new HomePage(page) 
-  const productPage = new ProductPage(page)
+  const productTitle = 'Slip Joint Pliers';
+  const productPrice = 9.17;
 
+  await productPage.openProduct(productTitle)
 
-  await homePage.open();
-
-  await productPage.openProduct('Slip Joint Pliers')
-
-  await productPage.checkProductInfo('Slip Joint Pliers', 9.17)
+  await productPage.checkProductInfo(productTitle, productPrice)
 
   await expect (productPage.addToCartBtn).toBeVisible();
 
@@ -64,10 +56,10 @@ test('AddToCart', async ({ page }) => {
 
   await homePage.header.checkUrl('/checkout')
 
-  await productPage.checkProductValue(1)
+  await checkOutPage.checkProductValue(1)
 
-  await productPage.checkProductName('Slip Joint Pliers')
+  await checkOutPage.checkProductName(productTitle)
   
-  await productPage.checkProceedBtn()
+  await checkOutPage.checkProceedBtn()
 })
 
