@@ -22,8 +22,9 @@ export class Header {
         await this.cartIcon.click()
     }
 
-    async checkAccName(title:string): Promise<void> {
-        await expect(this.accName).toContainText(title)
+    async checkAccName(): Promise<void> {
+        const expectedName = process.env.USER_NAME!;
+    await expect(this.accName).toHaveText(expectedName);
 }
 
     async checkUrl(title:string):Promise<void> {

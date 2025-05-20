@@ -8,7 +8,7 @@ export class HomePage {
     readonly filters: ProductsFiltersFragment
     readonly header: Header
 
-constructor (page:Page,) {
+constructor (page:Page) {
     this.page = page;
     this.productTitles = page.locator(".product-title");
     this.filters = new ProductsFiltersFragment(page)
